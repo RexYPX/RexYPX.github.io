@@ -4,6 +4,31 @@
   
   
   <entry>
+    <title>Thrift、Protobuf和Avro的比较</title>
+    <link href="/2023/03/05/Thrift%E3%80%81Protobuf%E5%92%8CAvro%E7%9A%84%E6%AF%94%E8%BE%83/"/>
+    <url>/2023/03/05/Thrift%E3%80%81Protobuf%E5%92%8CAvro%E7%9A%84%E6%AF%94%E8%BE%83/</url>
+    
+    <content type="html"><![CDATA[<h2 id="一、定义"><a href="#一、定义" class="headerlink" title="一、定义"></a>一、定义</h2><h3 id="Thrift"><a href="#Thrift" class="headerlink" title="Thrift"></a>Thrift</h3><p><strong>Thrift</strong> 是由 Facebook 主导开发的一个跨平台、支持多语言的，通过定义 IDL 文件，自动生成 RPC 客户端与服务端通信代码的工具，以构建在 C++, Java, Python, PHP, Ruby, Erlang, Perl, Haskell, C#, Cocoa, JavaScript, Node.js, Smalltalk, and OCaml 这些编程语言间无缝结合的、高效的服务。Thrift通过一个中间语言(IDL, 接口定义语言)来定义RPC的接口和数据类型，然后通过一个编译器生成不同语言的代码并由生成的代码负责RPC协议层和传输层的实现。</p><p><strong>Thrift</strong> 是由 Facebook 开源的一个RPC框架，用来进行可扩展且跨语言的服务的开发，使得各种编程语言间无缝结合的、高效的服务。我们依据Thrift的规范 简单定义访问接口，通过Thrift编译器编译生成各种编程语言代码，实现各种语言模块之间的高效互访问，速度比Google的Protocol Buffers还要快。Thrift可以说它是现在最优秀的分布式通信机制，实现了在大型分布式集群中各独立模块之间的高效协同</p><h3 id="Protobuf"><a href="#Protobuf" class="headerlink" title="Protobuf"></a>Protobuf</h3><p><strong>protocol buffer</strong> 是一种序列化与结构化数据的一种机制，具有跨平台、解析速度快、序列化数据体积小、扩展性高、使用简单的特点。</p><h3 id="Avro"><a href="#Avro" class="headerlink" title="Avro"></a>Avro</h3><p><strong>Apache Avro</strong> 是一个二进制的数据序列化系统。实际上 Avro 除了序列化之外，像 MP 一样也提供了远程调用（ RPC ）功能。 Avro 是属于 Hadoop 的一个子项目，由 Hadoop 的 创始人 Doug Cutting 牵头开发，设计用于支持大批量数据交换的应用，依赖模式 (Schema) 来实现数据结构定义，模式由 JSON 对象来表示， Avro 也被作为一种 RPC 框架来使用。客户端希望同服务器端交互时，就需要交换双方通信的协议，它类似于模式，需要双方来定义，在 Avro 中被称为消息 (Message) 。通信双方都必须保持这种协议，以便于解析从对方发送过来的数据，这也就是传说中的握手阶段。</p><h2 id="二、框架优缺点分析"><a href="#二、框架优缺点分析" class="headerlink" title="二、框架优缺点分析"></a>二、框架优缺点分析</h2><h3 id="Google-Protobuf"><a href="#Google-Protobuf" class="headerlink" title="Google Protobuf"></a>Google Protobuf</h3><p><strong>优点</strong></p><ul><li>二进制消息，性能好&#x2F;效率高（空间和时间效率都很不错）</li><li>proto文件生成目标代码，简单易用</li><li>序列化反序列化直接对应程序中的数据类，不需要解析后在进行映射(XML,JSON都是这种方式)</li><li>支持向前兼容（新加字段采用默认值）和向后兼容（忽略新加字段），简化升级</li><li>支持多种语言（可以把proto文件看做IDL文件）</li><li>Netty等一些框架集成</li></ul><p><strong>缺点</strong></p><ul><li>官方只支持C++,JAVA和Python语言绑定</li><li>二进制可读性差（貌似提供了Text_Fromat功能）</li><li>二进制不具有自描述特性</li><li>默认不具备动态特性（可以通过动态定义生成消息类型或者动态编译支持）</li><li>只涉及序列化和反序列化技术，不涉及RPC功能（类似XML或者JSON的解析器）</li></ul><h3 id="Apache-Thrift"><a href="#Apache-Thrift" class="headerlink" title="Apache Thrift"></a>Apache Thrift</h3><p><strong>应用</strong></p><ul><li>Facebook的开源的日志收集系统(scribe: <a href="https://github.com/facebook/scribe">https://github.com/facebook/scribe</a>)</li><li>淘宝的实时数据传输平台(TimeTunnel <a href="http://code.taobao.org/p/TimeTunnel/wiki/index">http://code.taobao.org/p/TimeTunnel/wiki/index</a>)</li><li>Evernote开放接口(<a href="https://github.com/evernote/evernote-thrift">https://github.com/evernote/evernote-thrift</a>)</li><li>Quora(<a href="http://www.quora.com/Apache-Thrift">http://www.quora.com/Apache-Thrift</a>)</li><li>HBase( <a href="http://abloz.com/hbase/book.html#thrift">http://abloz.com/hbase/book.html#thrift</a> )</li><li>…</li></ul><p><strong>优点</strong></p><ul><li>支持非常多的语言绑定</li><li>thrift文件生成目标代码，简单易用</li><li>消息定义文件支持注释</li><li>数据结构与传输表现的分离，支持多种消息格式</li><li>包含完整的客户端&#x2F;服务端堆栈，可快速实现RPC</li><li>支持同步和异步通信</li></ul><p><strong>缺点</strong></p><ul><li>和protobuf一样不支持动态特性</li></ul><h3 id="Apache-Avro"><a href="#Apache-Avro" class="headerlink" title="Apache Avro"></a>Apache Avro</h3><p><strong>应用</strong></p><ul><li>Hadoop RPC （<a href="http://hadoop.apache.org/#What+Is+Apache+Hadoop%3F%EF%BC%89">http://hadoop.apache.org/#What+Is+Apache+Hadoop%3F）</a></li></ul><p><strong>优点</strong></p><ul><li>二进制消息，性能好&#x2F;效率高</li><li>使用JSON描述模式</li><li>模式和数据统一存储，消息自描述，不需要生成stub代码（支持生成IDL）</li><li>RPC调用在握手阶段交换模式定义</li><li>包含完整的客户端&#x2F;服务端堆栈，可快速实现RPC</li><li>支持同步和异步通信</li><li>支持动态消息</li><li>模式定义允许定义数据的排序（序列化时会遵循这个顺序）</li><li>提供了基于Jetty内核的服务基于Netty的服务</li></ul><p><strong>缺点</strong></p><ul><li>只支持Avro自己的序列化格式</li><li>语言绑定不如Thrift丰富</li></ul><h2 id="三、性能对比"><a href="#三、性能对比" class="headerlink" title="三、性能对比"></a>三、性能对比</h2><p>由于thrift功能较protobuf丰富,因此单从序列化机制上进行性能比较,手机html制作按照序列化后字节数、序列化时间、反序列化时间三个指标进行对thrift的二进制、压缩、protobuf三种格式进行对比发现：Protobuf序列化后的字节数较少,符合w3c标准而且序列化和反序列化的时间也较短.</p><h2 id="四、小结"><a href="#四、小结" class="headerlink" title="四、小结"></a>四、小结</h2><p><strong>相同点：</strong></p><ol><li><strong>简化处理对xml文件的处理</strong></li></ol><ul><li>数据类型相对固定的情况下，不论是thrift还是protobuf都会比直接处理xml要方便很多</li></ul><blockquote><p>常用的跨语言通信方案：</p><ul><li>基于SOAP消息格式的WebService</li><li>基于JSON消息格式的RESTful 服务</li></ul><p>以上两种方案的弊端：</p><ul><li>XML体积太大，解析性能极差</li><li>JSON体积相对较小，解析相对较快，但表达能力较弱</li></ul></blockquote><p><strong>不同点：</strong></p><ol><li><strong>创作者</strong></li></ol><p>thrift由facebook出品，protobuffer由google出品；</p><ol start="2"><li><strong>语言支持</strong></li></ol><ul><li><p>Thrift: 支持的语言更广泛一些c++, java, python,ruby, csharp, haskell, ocmal, erlang, cocoa, php</p></li><li><p>protobuf 目前还是只支持c++, java, python</p></li></ul><ol start="3"><li><strong>协议支持</strong></li></ol><ul><li><p>Thrift支持多种协议格式. Thrift的代码实现，有专门的TProtocol和TTransport抽象，相互配合，可以实现多种协议，方便集成各种传输方式。至少目前Thrift就能使用json作为序列化协议。 </p></li><li><p>protobuf只安心一种协议，并下决心把这个格式做好。输入输出也是标准的stream。</p></li></ul><ol start="4"><li><strong>跨平台问题</strong></li></ol><ul><li><p>thrift目前不支持Windows平台 </p></li><li><p>protobuf没有这个问题，提供了visual studio的项目文件，可以很顺利的在windows平台下编译。</p></li></ul><ol start="5"><li><strong>易用性</strong></li></ol><ul><li>thrift侧重点是构建夸语言的可伸缩的服务，特点就是支持的语言多，同时提供了完整的rpc service framework，可以很方便的直接构建服务，不需要做太多其他的工作。</li></ul><h2 id="五、参考链接"><a href="#五、参考链接" class="headerlink" title="五、参考链接"></a>五、参考链接</h2><p><a href="https://blog.csdn.net/hu2010shuai/article/details/53009349">https://blog.csdn.net/hu2010shuai/article/details/53009349</a></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>RPC</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>转载</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
     <title>RPC基本概念</title>
     <link href="/2023/03/05/RPC%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/"/>
     <url>/2023/03/05/RPC%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5/</url>
